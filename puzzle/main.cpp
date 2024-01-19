@@ -23,7 +23,7 @@ int main()
 	Player* disp_o_menu(Player* ptr,int n);
 	Player data[40],*ptr[40];
 	char MMenu[][25]={"Bắt đầu","Hướng dẫn","Thoát"},name[40];
-	char SMenu[][25]={"Người mới","Đang thoát"};
+	char SMenu[][25]={"Người mới","Đã có tk"};
 	char yes_no[][25]={"Có","Không"};
 	int level1[][4]={{1,2,3,4},{5,6,7,8},{9,10,12,15},{13,14,11,99}};
 	int level2[][4]={{1,6,2,3},{5,10,4,9},{8,14,7,12},{13,15,11,99}};
