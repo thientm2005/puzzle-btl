@@ -7,32 +7,115 @@
 #include <algorithm>
 
 using namespace std;
+int board[][4]={{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,99}};
+int random_move(int level[][4], int& ptr1, int& ptr2) {
+    int direction;
+    while (true) {
+        direction = rand() % 4;
+        if ((direction == 0 && ptr1 > 0) ||
+            (direction == 1 && ptr1 < 3) ||
+            (direction == 2 && ptr2 > 0) ||
+            (direction == 3 && ptr2 < 3)) {
+            break;
+        }
+    }
+    switch (direction) {
+    case 0:
+        swap(level[ptr1][ptr2], level[ptr1 - 1][ptr2]);
+        ptr1--;
+        break;
+    case 1:
+        swap(level[ptr1][ptr2], level[ptr1 + 1][ptr2]);
+        ptr1++;
+        break;
+    case 2:
+        swap(level[ptr1][ptr2], level[ptr1][ptr2 - 1]);
+        ptr2--;
+        break;
+    case 3:
+        swap(level[ptr1][ptr2], level[ptr1][ptr2 + 1]);
+        ptr2++;
+        break;
+    }
+    return direction;
+}
+int auto_run(int level[][4], int correct, int l) {
+    int win = correct, ptr1, ptr2;
+    int moveCount = 0;
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (level[i][j] == 99) {
+                ptr1 = i;
+                ptr2 = j;
+                break;
+            }
+        }
+    }
+    while (win != 16) {
+        int direction = random_move(level, ptr1, ptr2);
+        system("cls");
+        cout << "Auto Run - Game level " << l << endl << endl;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (level[i][j] == 99) {
+                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
+                    cout << setw(3) << "__";
+                    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+                }
+                else {
+                    cout << setw(3) << level[i][j];
+                }
+            }
+            cout << endl;
+        }
+        cout << "correct positions=" << setw(2) << win << " Incorrect= " << setw(2) << 16 - win;
+        Beep(1000, 50);
+        Sleep(200);
+        win = 0;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (level[i][j] == board[i][j]) {
+                    win++;
+                }
+            }
+        }
+        moveCount++;
+        if (moveCount >= 1000) {
+            break;
+        }
+    }
+    system("cls");
+    cout << endl << "Auto Run completed in " << moveCount << " moves!" << endl;
+    Beep(1000, 50);
+    Sleep(200);
+    return 0;
+}
 
 class Player{
 	public:
 	char name[40];int level;
 };
-int board[][4]={{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,99}};
 int main()
 {
     SetConsoleOutputCP(CP_UTF8);
 	void showconst(int num[][4]);
 	int game_play(int level[][4],int correct,int l);
-	int disp_o_menu(char item[][25],int n,char* string);
+	int disp_o_menu(char item[][40],int n,char* string);
 	int disp_o_menu(int level);
 	Player* disp_o_menu(Player* ptr,int n);
 	Player data[40],*ptr[40];
-	char MMenu[][25]={"Bắt đầu","Hướng dẫn","Thoát"},name[40];
-	char SMenu[][25]={"Người mới","Đã có tk"};
-	char yes_no[][25]={"Có","Không"};
+	char MMenu[][40]={"Bắt đầu","Hướng dẫn","Thoát","Auto run"},name[40];
+	char SMenu[][40]={"Người mới","Đã có tk"};
+	char yes_no[][40]={"Có","Không"};
 	int level1[][4]={{1,2,3,4},{5,6,7,8},{9,10,12,15},{13,14,11,99}};
 	int level2[][4]={{1,6,2,3},{5,10,4,9},{8,14,7,12},{13,15,11,99}};
 	int level3[][4]={{1,6,3,5},{4,6,2,8},{13,10,11,12},{9,14,15,99}};
 	int level4[][4]={{1,7,3,6},{5,4,2,8},{9,13,11,12},{10,14,15,99}};
 	int level5[][4]={{1,4,3,7},{5,6,2,8},{9,10,13,12},{11,14,15,99}};
 	int correct[5]={2,13,4,4,5};
+	int ret;
 	menu:
-	int choice1=disp_o_menu(MMenu,3,"Main Menu");
+	int choice1=disp_o_menu(MMenu,4,"Main Menu");
 	if(choice1==0){
 		Sleep(100);
 		int choice2=disp_o_menu(SMenu,2,"Người dùng");
@@ -91,7 +174,6 @@ int main()
 
 
 	system("cls");
-	int ret;
 	do{
 	system("cls");
 	char a;
@@ -172,7 +254,6 @@ int main()
 			while(GetAsyncKeyState(VK_RETURN)!=0);
 			goto menu;
 		}
-
     }while(1);
 	}
 	else if(choice1==1){
@@ -187,16 +268,20 @@ int main()
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),3);
 		cout<<endl<<"-----trở thành..."<<endl<<endl;
 		showconst(board);
-		system("pause");
 		cout<< "-----Chỉ duy nhất ô trống là bạn có thể điều khiển qua lại với nhau."<<endl;
 		cout<< "-----Hãy sử dụng phím mũi tên <^> để di chuyển ô trống đó"<<endl;
 		cout<<"               Good luck for you!!!                "<<endl;
-
+        system("pause");
 		while(GetAsyncKeyState(VK_RETURN)!=0);
 		goto menu;
 	}
-	else
+	else if(choice1==3){
+        system("cls");
+        ret = auto_run(level1, correct[0], 1);
+	}
+	else {
 		return 0;
+	}
 }
 	void showconst(int num[][4]){
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),6);
@@ -248,7 +333,7 @@ int main()
 				}
 		Sleep(120);
 		}}
-	int disp_o_menu(char item[][25],int n,char* string){
+	int disp_o_menu(char item[][40],int n,char* string){
 		int pointer=0;
 		for(;;){
 			system("cls");
