@@ -69,7 +69,6 @@ int auto_run(int level[][4], int correct, int l) {
             cout << endl;
         }
         cout << "correct positions=" << setw(2) << win << " Incorrect= " << setw(2) << 16 - win;
-        Beep(1000, 50);
         Sleep(200);
         win = 0;
         for (int i = 0; i < 4; i++) {
@@ -86,7 +85,6 @@ int auto_run(int level[][4], int correct, int l) {
     }
     system("cls");
     cout << endl << "Auto Run completed in " << moveCount << " moves!" << endl;
-    Beep(1000, 50);
     Sleep(200);
     return 0;
 }
@@ -278,6 +276,8 @@ int main()
 	else if(choice1==3){
         system("cls");
         ret = auto_run(level1, correct[0], 1);
+        system("pause");
+
 	}
 	else {
 		return 0;
@@ -488,7 +488,6 @@ int game_play(int level[][4],int correct,int l)
 							win++;
 					}
 			}
-		Beep(1000,50);
 		Sleep(200);
 		}
 system("cls");
